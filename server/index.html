@@ -29,12 +29,18 @@
         initialize()
         fetch("http://localhost:3000/data")
         .then(data => {
-            console.log("DATA: " + JSON.stringify(data))
-            populateMarkers(data.body)
-        })
+            data.json()
+            .then(json => {
+                console.log(json)
+                populateMarkers(json)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        }) 
         .catch(error => {
-            console.error(error)
-        });
+            console.log(error)
+        })
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUSbjnJg0Qpcaur_Ka6C3ce377g-XFkkA&callback=initMap"
