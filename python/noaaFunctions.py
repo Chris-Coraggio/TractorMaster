@@ -3,8 +3,8 @@ import requests
 token = "tHCCKVwArUEFKLQfTXDshSpAXEwvIxsX"
 base_url = "https://www.ncdc.noaa.gov/cdo-web/api/v2/"
 
-start = "2017-01-01"
-end = "2018-01-01"
+start = "2017-11-01"
+end = "2018-10-31"
 
 headers = {'token': token}
 
