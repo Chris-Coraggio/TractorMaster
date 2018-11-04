@@ -23,6 +23,8 @@ var STATE;
 
 var twitter_markers = []
 var heatmap_arr = []
+var countmap_arr = [];
+var heatmap;
 var stores_by_state = {}
 
 //Initialize our Google Map
@@ -47,7 +49,7 @@ function populateMarkers(data) {
     data.forEach(store => {
         stores_by_state[store.state] = []
         stores_by_state[store.state].push({location: new google.maps.LatLng(store.latitude, store.longitude), weight:0.2})
-        heatmap_arr.push({location: new google.maps.LatLng(store.latitude, store.longitude), weight:0.2})
+        // heatmap_arr.push({location: new google.maps.LatLng(store.latitude, store.longitude), weight:0.2})
     })
     data.forEach(store => {
 
@@ -77,7 +79,7 @@ function populateMarkers(data) {
         MAPAPP.markers.push(marker);
     })
 
-    var heatmap = new google.maps.visualization.HeatmapLayer({
+    heatmap = new google.maps.visualization.HeatmapLayer({
         data: heatmap_arr,
         map: map
     });
@@ -142,7 +144,6 @@ function process_twitter(){
         twitter_coeff = arr[1]
         if(states[state_name]){
 
-            console.log(states[state_name])
             // the details of the marker for the store
             var marker = new google.maps.Marker({
                 map: map,
@@ -178,10 +179,10 @@ function process_twitter(){
 }
 
 function toggleTwitter(){
-    console.log("Toggling!")
+    // console.log("Toggling!")
     twitter_markers.forEach(marker => {
-        console.log(marker)
-        console.log(marker.visible)
+        // console.log(marker)
+        // console.log(marker.visible)
         marker.setVisible(!marker.visible)
     })
 }
@@ -201,43 +202,39 @@ function run_against_model_and_update_map(){
     if(!CATEGORY || !DATE){
         return;
     }
-    console.log("----------------")
-    console.log(CATEGORY)
-    console.log(DATE)
-    console.log("----------------")
     var numStates = STATES.length
     var numStatesProcessed = 0
+    countmap_arr.splice(0, countmap_arr.length - 1);
+    let promises = [];
     STATES.forEach(state => {
-        STATE = state
-        query_model(function(count){
-            count.json().then(count=>{
-            console.log("STATE: " + state)
-            console.log("COUNT: " + count.prediction)
-            if(count.prediction == null){
-                COUNT = 0
-            } else {
-                COUNT = count.prediction
-            }
-            stores_by_state[STATE].forEach(store=>{
-                console.log(store)
-                heatmap_arr.push({location: new google.maps.LatLng(store.location.lat, store.location.lng), weight: 20 * COUNT})
-            })
-        })
-        })
-    })
+        promises.push(new Promise((res, rej) => {
+            query_model(state, CATEGORY, DATE)
+            .then(data => data.json())
+            .then(count => {
+                if(count.prediction == null){
+                    COUNT = 0
+                } else {
+                    COUNT = count.prediction
+                }
+                stores_by_state[state].forEach(store=>{
+                    console.log(store)
+                    countmap_arr.push({location: new google.maps.LatLng(store.location.lat(), store.location.lng()), weight: 200 * COUNT})
+                })
+                res()
+            }).catch(err => {console.error(err); rej()})
+        }));
+    });
+    Promise.all(promises).then(() => {
+        console.log(countmap_arr);
+        heatmap.setData(countmap_arr);
+    });
 }
 
-function query_model(callback){
-    console.log(JSON.stringify({date: formatDate(DATE).replace("/", "-"), category: CATEGORY, state: STATE}))
-    fetch("http://localhost:3000/count", {method: 'POST', headers: {
+function query_model(s, c, d){
+    // console.log(JSON.stringify({date: formatDate(DATE).replace("/", "-"), category: CATEGORY, state: STATE}))
+    return fetch("http://localhost:3000/count", {method: 'POST', headers: {
         "Content-Type": "application/json; charset=utf-8",
-    }, body: JSON.stringify({date: formatDate(DATE), category: CATEGORY, state: STATE})})
-    .then(count => {
-        callback(count)
-    })
-    .catch(err =>{
-        console.log(err)
-    })
+    }, body: JSON.stringify({date: formatDate(d), category: c, state: s})})
 }
 
 function formatDate(date) {
