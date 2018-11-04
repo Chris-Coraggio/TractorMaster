@@ -26,6 +26,7 @@ var heatmap_arr = []
 var countmap_arr = [];
 var heatmap;
 var stores_by_state = {}
+var ave_counts_by_state = {}
 
 //Initialize our Google Map
 function initialize() {
@@ -115,7 +116,37 @@ function populateMarkers(data) {
             markers[i].setVisible(zoom > 8);
         }
     });
+
+    map.data.addListener('mouseover', mouseInToRegion);
+    map.data.addListener('mouseout', mouseOutOfRegion);
+    map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/states.js', { idPropertyName: 'STATE' });
+
 };
+
+/**
+       * Responds to the mouse-in event on a map shape (state).
+       *
+       * @param {?google.maps.MouseEvent} e
+       */
+      function mouseInToRegion(e) {
+        // set the hover state so the setStyle function can change the border
+        console.log("You are in " + e.feature.getProperty('NAME'))
+        var stateName = e.feature.getProperty('NAME')
+        var stateAbbrev = statesToAbbrev[stateName]
+        var count = ave_counts_by_state[stateAbbrev]
+        console.log("The average count here is " + count)
+        e.feature.setProperty('state', 'hover');
+      }
+
+      /**
+       * Responds to the mouse-out event on a map shape (state).
+       *
+       * @param {?google.maps.MouseEvent} e
+       */
+      function mouseOutOfRegion(e) {
+        // reset the hover state, returning the border to normal
+        e.feature.setProperty('state', 'normal');
+      }
 
 function snapToState(){
     var state = document.getElementById("stateSelected").value
@@ -226,6 +257,7 @@ function run_against_model_and_update_map(){
                 }
                 stores_by_state[state].forEach(store=>{
                     countmap_arr.push({location: new google.maps.LatLng(store.location.lat(), store.location.lng()), weight: 200 * COUNT})
+                    ave_counts_by_state[state] = COUNT
                 })
                 res()
             }).catch(err => {console.error(err); rej()})
@@ -363,3 +395,58 @@ let twitter_by_state = {
     "New Mexico": 27.85,
     "Oregon": 32.57
 }
+
+var statesToAbbrev = {
+    'Arizona': 'AZ',
+    'Alabama': 'AL',
+    'Alaska': 'AK',
+    'Arizona': 'AZ',
+    'Arkansas': 'AR',
+    'California': 'CA',
+    'Colorado': 'CO',
+    'Connecticut': 'CT',
+    'Delaware': 'DE',
+    'Florida': 'FL',
+    'Georgia': 'GA',
+    'Hawaii': 'HI',
+    'Idaho': 'ID',
+    'Illinois': 'IL',
+    'Indiana': 'IN',
+    'Iowa': 'IA',
+    'Kansas': 'KS',
+    'Kentucky': 'KY',
+    'Kentucky': 'KY',
+    'Louisiana': 'LA',
+    'Maine': 'ME',
+    'Maryland': 'MD',
+    'Massachusetts': 'MA',
+    'Michigan': 'MI',
+    'Minnesota': 'MN',
+    'Mississippi': 'MS',
+    'Missouri': 'MO',
+    'Montana': 'MT',
+    'Nebraska': 'NE',
+    'Nevada': 'NV',
+    'New Hampshire': 'NH',
+    'New Jersey': 'NJ',
+    'New Mexico': 'NM',
+    'New York': 'NY',
+    'North Carolina': 'NC',
+    'North Dakota': 'ND',
+    'Ohio': 'OH',
+    'Oklahoma': 'OK',
+    'Oregon': 'OR',
+    'Pennsylvania': 'PA',
+    'Rhode Island': 'RI',
+    'South Carolina': 'SC',
+    'South Dakota': 'SD',
+    'Tennessee': 'TN',
+    'Texas': 'TX',
+    'Utah': 'UT',
+    'Vermont': 'VT',
+    'Virginia': 'VA',
+    'Washington': 'WA',
+    'West Virginia': 'WV',
+    'Wisconsin': 'WI',
+    'Wyoming': 'WY',
+};
