@@ -8,8 +8,7 @@ app.use(bodyParser.json());
 const port = 3000;
 
 app.get('/', (req, res) => {
-	// Display a test message
-	res.send('Hello World!')
+    res.sendFile(__dirname + "/index.html");
 })
 
 app.get('/map', (req, res) => {
@@ -28,7 +27,7 @@ app.get("/*.*", (req, res, next) => {
 
 app.listen(process.env.PORT || port, () => {
 	var thePort = (process.env.PORT == undefined ? port : process.env.PORT)
-	console.log('GetTogether is listening on port ' + thePort + "!");
+	console.log('Server is listening on port ' + thePort + "!");
 });
 
 let states = {
