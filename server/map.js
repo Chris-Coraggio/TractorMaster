@@ -44,7 +44,9 @@ function initialize() {
 function populateMarkers(data) {
     var markers = []
     data.forEach(store => {
-        stores_by_state[store.state] = []
+        if(!stores_by_state[store.state]){
+            stores_by_state[store.state] = []
+        }
         stores_by_state[store.state].push({location: new google.maps.LatLng(store.latitude, store.longitude), weight:0.2})
         // heatmap_arr.push({location: new google.maps.LatLng(store.latitude, store.longitude), weight:0.2})
     })
