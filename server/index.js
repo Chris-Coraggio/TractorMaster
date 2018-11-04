@@ -1,6 +1,9 @@
-var express = require("express")
+let express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+
+let eval = require('../model/eval.js');
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -18,6 +21,16 @@ app.get('/map', (req, res) => {
 app.get('/data', (req, res) => {
     console.log("Hit the route")
     res.sendFile("data/StoreLocator.json", {root: __dirname})
+})
+
+app.get('/count*', (req, res) => {
+    let date = req.query.date;
+    let state = req.query.state;
+    let category = req.query.category;
+    if(!date || !state || !category){
+        res.status(401)
+    }
+    res.status(200).end(JSON.stringify({prediction: eval.predictCount(date,state,category)}));
 })
 
 // fix dependency on files
