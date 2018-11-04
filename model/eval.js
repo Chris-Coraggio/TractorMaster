@@ -38,16 +38,21 @@ module.exports = {
         return dayOfYear;
     },
     predictCount: (date, state, category) => {
+
         date = date.split('-') // YYYY MM DD
-        if(date[1] > 10 && date[0] > 2018){
-            date[0] = 2017
-        }
         date = date[1] + "/" + date[2] + "/" + date[0] // MM/DD/YYYY
-        let temp = data[state][date].temp;
-        let prec = data[state][date].prec;
+        let temp, prec;
+        try{
+            temp = data[state][date].temp;
+            prec = data[state][date].prec;
+        } catch(err) {
+            temp = 50;
+            prec = 0;
+        }
         
         out = 0;
         
+
         //Temperature
         let bin = Math.floor(temp/TEMP_BIN_CUTOFF);
         let x = bin/models[category].tempBinMax;

@@ -190,12 +190,11 @@ function toggleTwitter(){
 }
 
 function handleSlider(){
-    console.log("Handling slider!")
-    var num_days_from_start = document.getElementById("forecastSlider").value
-    console.log(num_days_from_start)
+    var offset = document.getElementById("forecastSlider").value
     var start_date = document.getElementById("date-picker-start").value
     start_date = new Date(start_date)
-    DATE.setDate(start_date.getDate() + num_days_from_start)
+    DATE = start_date;
+    DATE = new Date(DATE.getTime() + offset*24*60*60*1000);
     document.getElementById("currDate").innerHTML = "Current Date: " + formatDate(DATE)
     run_against_model_and_update_map()
 }
@@ -208,6 +207,13 @@ function run_against_model_and_update_map(){
     var numStatesProcessed = 0
     countmap_arr.splice(0, countmap_arr.length - 1);
     let promises = [];
+    console.log(DATE.getMonth());
+    if(DATE.getYear() != 2017 && DATE.getMonth() >= 10){
+        DATE.setYear(2017);
+    } else if (DATE.getYear() != 2018 && DATE.getMonth() <= 10){
+        DATE.setYear(2018)
+    }
+    console.log(DATE);
     STATES.forEach(state => {
         promises.push(new Promise((res, rej) => {
             query_model(state, CATEGORY, DATE)
@@ -219,7 +225,6 @@ function run_against_model_and_update_map(){
                     COUNT = count.prediction
                 }
                 stores_by_state[state].forEach(store=>{
-                    console.log(store)
                     countmap_arr.push({location: new google.maps.LatLng(store.location.lat(), store.location.lng()), weight: 200 * COUNT})
                 })
                 res()
@@ -242,7 +247,7 @@ function query_model(s, c, d){
 function formatDate(date) {
     var d = new Date(date),
     month = '' + (d.getMonth() + 1),
-    day = '' + d.getDate(),
+    day = '' + (d.getDate() + 1),
     year = d.getFullYear();
 
     if (month.length < 2) month = '0' + month;

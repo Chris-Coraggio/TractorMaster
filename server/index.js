@@ -31,6 +31,7 @@ app.post('/count', (req, res) => {
     let date = req.body.date;
     let state = req.body.state;
     let category = req.body.category;
+    console.log(date,state,category);
     if(!date || !state || !category){
         res.status(401)
     }
