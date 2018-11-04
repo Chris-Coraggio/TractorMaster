@@ -134,7 +134,13 @@ function populateMarkers(data) {
         var stateName = e.feature.getProperty('NAME')
         var stateAbbrev = statesToAbbrev[stateName]
         var count = ave_counts_by_state[stateAbbrev]
+        if(count == undefined){
+            count = 0
+        } else {
+            count = (Math.round(count * 100)) / 100
+        }
         console.log("The average count here is " + count)
+        document.getElementById("avgCount").innerHTML = "Current State: " + stateName + "\nAvg. Count: " + count
         e.feature.setProperty('state', 'hover');
       }
 
