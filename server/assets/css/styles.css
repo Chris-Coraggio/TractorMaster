@@ -55,9 +55,12 @@
 /*------------------------- 1. Core Css -------------------*/
 
 .menuItem{
-    
     font-size: 16px;
     color: rgb(202,202,202);
+}
+
+.slider{
+    margin-left: 45px;
 }
 
 .page-container {
@@ -672,8 +675,8 @@
 }
 
 .page-title {
-    margin-top: 35px;
-    padding-bottom: 40px;
+    margin-top: 7px;    
+    padding-bottom: 10px;
     font-size: 24px;
     font-weight: 300;
     color: #313b3d;

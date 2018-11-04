@@ -206,33 +206,22 @@
             </div>
             <div>
                 <div class="col-12">
-                    <div class="row mb-5">
+                    <div class="row">
                     <div class="col-4">
                         <label for="start">Start</label>
                         <input type="date" id="date-picker-start" name="trip"
                                 value="2018-11-04"
                                 min="2017-11-01" max="2018-12-31" onchange="getRange()"/>
                     </div>
-    
                     <div class="col-4"></div>
-                        
                     <div class="col-4">
                         <label for="end">End</label>
                         <input type="date" id="date-picker-end" name="trip"
                                 value="2018-11-11"
                                 min="2017-11-01" max="2018-12-31" onchange="getRange()"/>
                     </div>
-
-                <div class="row mb-5">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-sm-flex justify-content-between align-items-top">
-                                        <input type="range" min="0" max="7" value="0" class="slider" id="forecastSlider" style="width: 100%" onchange="handleSlider()">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="slider row">
+                    <input type="range" min="0" max="7" value="0" class="slider" id="forecastSlider" style="width: 100%" onchange="handleSlider()">
                 </div>
             </div>
     </div>
