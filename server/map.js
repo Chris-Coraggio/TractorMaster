@@ -19,6 +19,7 @@ var STATES = [
     "RI",
     "VT"
 ]
+var STATE;
 
 var twitter_markers = []
 var heatmap_arr = []
@@ -117,6 +118,7 @@ function snapToState(){
 
 function changeCategory(){
     CATEGORY = document.getElementById("categorySelected").value
+    console.log("Category is now: " + CATEGORY)
     run_against_model_and_update_map()
 }
 
@@ -170,6 +172,10 @@ function process_twitter(){
         }
     })
     toggleTwitter()
+    var num_days_from_start = document.getElementById("forecastSlider").value
+    var start_date = document.getElementById("date-picker-start").value
+    start_date = new Date(start_date)
+    DATE = start_date.setDate(start_date.getDate() + num_days_from_start)
 }
 
 function toggleTwitter(){
@@ -185,37 +191,79 @@ function handleSlider(){
     var num_days_from_start = document.getElementById("forecastSlider").value
     var start_date = document.getElementById("date-picker-start").value
     start_date = new Date(start_date)
-    DATE = start_date.addDays(num_days_from_start)
+    DATE = start_date.setDate(start_date.getDate() + num_days_from_start)
     run_against_model_and_update_map()
 }
 
 function run_against_model_and_update_map(){
-    STATES.forEach(STATE => {
-        var COUNT = query_model(DATE, CATEGORY, STATE)
-        heatmap = []
-        for(store in stores_by_state[STATE]){
-            heatmap.push({location: new google.maps.LatLng(store.latitude, store.longitude), weight: COUNT})
-        }
+    if(!CATEGORY || !DATE){
+        return;
+    }
+    console.log("----------------")
+    console.log(CATEGORY)
+    console.log(DATE)
+    console.log("----------------")
+    var numStates = STATES.length
+    var numStatesProcessed = 0
+    STATES.forEach(state => {
+        STATE = state
+        query_model(function(count){
+            count.json().then(count=>{
+            console.log("STATE: " + state)
+            console.log("COUNT: " + count.prediction)
+            if(count.prediction == null){
+                COUNT = 0
+            } else {
+                COUNT = count.prediction
+            }
+            stores_by_state[STATE].forEach(store=>{
+                console.log(store)
+                heatmap_arr.push({location: new google.maps.LatLng(store.location.lat, store.location.lng), weight: 20 * COUNT})
+            })
+        })
+        })
     })
-    var heatmap = new google.maps.visualization.HeatmapLayer({
-        data: heatmap_arr,
-        map: map
-    });
-    heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-    heatmap.set('radius', heatmap.get('radius') ? null : 20);
-    heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+}
+
+function query_model(callback){
+    console.log(JSON.stringify({date: formatDate(DATE).replace("/", "-"), category: CATEGORY, state: STATE}))
+    fetch("http://localhost:3000/count", {method: 'POST', headers: {
+        "Content-Type": "application/json; charset=utf-8",
+    }, body: JSON.stringify({date: formatDate(DATE), category: CATEGORY, state: STATE})})
+    .then(count => {
+        callback(count)
+    })
+    .catch(err =>{
+        console.log(err)
+    })
+}
+
+function formatDate(date) {
+    var d = new Date(date),
+    month = '' + (d.getMonth() + 1),
+    day = '' + d.getDate(),
+    year = d.getFullYear();
+    if(year == 2018 && month > 10){
+        year = 2017
+    }
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    var temp_date = [year, month, day].join('-');
+    temp_date = temp_date.replace("/", "-")
+    return temp_date
 }
 
 function animation(){
     var end_date = document.getElementById("date-picker-end").value
     end_date = new Date(end_date)
-    end_date = end_date.addDays(1) //to include the last date
+    end_date = end_date.setDate(end_date.getDate() + 1) //to include the last date
     while(DATE.getTime() != end_date.getTime()){
         document.getElementById("currDate").value = "Current Date: " + DATE.format("YYYY-mm-dd")
         run_against_model_and_update_map()
-        DATE = DATE.addDays(1)
+        DATE = DATE.setDate(DATE.getDate() + 1)
     }
-
 }
 
 let states = {
