@@ -309,11 +309,13 @@ function animation(){
     while(formatDate(DATE) != formatDate(end_date)){
         console.log("DATE: " + formatDate(DATE))
         console.log("END: " + formatDate(end_date))
-        document.getElementById("currDate").innerHTML = "Current Date: " + formatDate(DATE)
-        document.getElementById("forecastSlider").value++
-        run_against_model_and_update_map()
-        DATE.setDate(DATE.getDate() + 1)
-        if(++count == 20){
+        setTimeout(() => {
+            document.getElementById("currDate").innerHTML = "Current Date: " + formatDate(DATE)
+            document.getElementById("forecastSlider").value++
+            run_against_model_and_update_map()
+            DATE.setDate(DATE.getDate() + 1)
+        }, count * 1000);
+        if (++count == 7) {
             break; // sanity check on dates
         }
     }
