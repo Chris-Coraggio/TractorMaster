@@ -39,6 +39,9 @@ module.exports = {
     },
     predictCount: (date, state, category) => {
         date = date.split('-') // YYYY MM DD
+        if(date[1] > 10 && date[0] > 2018){
+            date[0] = 2017
+        }
         date = date[1] + "/" + date[2] + "/" + date[0] // MM/DD/YYYY
         let temp = data[state][date].temp;
         let prec = data[state][date].prec;
