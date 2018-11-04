@@ -35,6 +35,9 @@ function initialize() {
     };
     this.map = new google.maps.Map(document.getElementById('map'),
         mapOptions);
+    var start_date = document.getElementById("date-picker-start").value
+    DATE = new Date(start_date)
+    console.log(formatDate(DATE))
     process_twitter()
 };
 
@@ -172,10 +175,6 @@ function process_twitter(){
         }
     })
     toggleTwitter()
-    var num_days_from_start = document.getElementById("forecastSlider").value
-    var start_date = document.getElementById("date-picker-start").value
-    start_date = new Date(start_date)
-    DATE = start_date.setDate(start_date.getDate() + num_days_from_start)
 }
 
 function toggleTwitter(){
@@ -188,10 +187,13 @@ function toggleTwitter(){
 }
 
 function handleSlider(){
+    console.log("Handling slider!")
     var num_days_from_start = document.getElementById("forecastSlider").value
+    console.log(num_days_from_start)
     var start_date = document.getElementById("date-picker-start").value
     start_date = new Date(start_date)
-    DATE = start_date.setDate(start_date.getDate() + num_days_from_start)
+    DATE.setDate(start_date.getDate() + num_days_from_start)
+    document.getElementById("currDate").innerHTML = "Current Date: " + formatDate(DATE)
     run_against_model_and_update_map()
 }
 
@@ -243,9 +245,6 @@ function formatDate(date) {
     month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),
     year = d.getFullYear();
-    if(year == 2018 && month > 10){
-        year = 2017
-    }
 
     if (month.length < 2) month = '0' + month;
     if (day.length < 2) day = '0' + day;
@@ -258,11 +257,23 @@ function formatDate(date) {
 function animation(){
     var end_date = document.getElementById("date-picker-end").value
     end_date = new Date(end_date)
-    end_date = end_date.setDate(end_date.getDate() + 1) //to include the last date
-    while(DATE.getTime() != end_date.getTime()){
-        document.getElementById("currDate").value = "Current Date: " + DATE.format("YYYY-mm-dd")
+    end_date.setDate(end_date.getDate() + 1) //to include the last date
+    var num_days_from_start = document.getElementById("forecastSlider").value
+    console.log(num_days_from_start)
+    var start_date = document.getElementById("date-picker-start").value
+    start_date = new Date(start_date)
+    DATE.setDate(start_date.getDate() + num_days_from_start)
+    var count = 0
+    while(formatDate(DATE) != formatDate(end_date)){
+        console.log("DATE: " + formatDate(DATE))
+        console.log("END: " + formatDate(end_date))
+        document.getElementById("currDate").innerHTML = "Current Date: " + formatDate(DATE)
+        document.getElementById("forecastSlider").value++
         run_against_model_and_update_map()
-        DATE = DATE.setDate(DATE.getDate() + 1)
+        DATE.setDate(DATE.getDate() + 1)
+        if(++count == 20){
+            break; // sanity check on dates
+        }
     }
 }
 
