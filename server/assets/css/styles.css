@@ -1274,6 +1274,18 @@ table.dbkit-table tr td {
     color: #e1e1e1;
 }
 
+input[type="date"] {
+    width: 50%;
+}
+
+div[class="v-cal"] {
+    position: absolute;
+    z-index: 10;
+    left: calc(50% - 150px);
+    top: calc(50% - 150px);
+    visibility: hidden;
+}
+
 .member-box .media-body {}
 
 .member-box .media-body p {
