@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="assets/css/default-css.css">
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
-    <link href="assets/css/vanillaCalendar.css" rel="stylesheet">
     <!-- modernizr css -->
     <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
@@ -91,63 +90,6 @@
                                         </datalist></li>
                                         <li class="active"><a onclick="changeCategory()">Go</a></li>
                                 </ul>
-                                <a href="javascript:void(0)" aria-expanded="true"><i class="ti-dashboard"></i><span>Snap to State</span></a>
-                                <ul class="collapse">
-                                    <li class="active"><input list="states" id="stateSelected">
-                                        <datalist id="states">
-                                                <option value="Alabama">
-                                                <option value="Alaska">
-                                                <option value="Arizona">
-                                                <option value="Arkansas">
-                                                <option value="California">
-                                                <option value="Colorado">
-                                                <option value="Connecticut">
-                                                <option value="Delaware">
-                                                <option value="Florida">
-                                                <option value="Georgia">
-                                                <option value="Hawaii">
-                                                <option value="Idaho">
-                                                <option value="Illinois">
-                                                <option value="Indiana">
-                                                <option value="Iowa">
-                                                <option value="Kansas">
-                                                <option value="Kentucky">
-                                                <option value="Louisiana">
-                                                <option value="Maine">
-                                                <option value="Maryland">
-                                                <option value="Massachusetts">
-                                                <option value="Michigan">
-                                                <option value="Minnesota">
-                                                <option value="Mississippi">
-                                                <option value="Missouri">
-                                                <option value="Montana">
-                                                <option value="Nebraska">
-                                                <option value="Nevada">
-                                                <option value="New Hampshire">
-                                                <option value="New Jersey">
-                                                <option value="New Mexico">
-                                                <option value="New York">
-                                                <option value="North Carolina">
-                                                <option value="North Dakota">
-                                                <option value="Ohio">
-                                                <option value="Oklahoma">
-                                                <option value="Oregon">
-                                                <option value="Pennsylvania">
-                                                <option value="Rhode Island">
-                                                <option value="South Carolina">
-                                                <option value="South Dakota">
-                                                <option value="Tennessee">
-                                                <option value="Texas">
-                                                <option value="Utah">
-                                                <option value="Vermont">
-                                                <option value="Virginia">
-                                                <option value="Washington">
-                                                <option value="West Virginia">
-                                                <option value="Wisconsin">
-                                                <option value="Wyoming">
-                                        </datalist></li>
-                                    <li class="active"><a onclick="snapToState()">Go</a></li>
-                                </ul>
                                 <a href="javascript:void(0)" aria-expanded="true"><i class="ti-dashboard"></i><span>Twitter</span></a>
                                     <ul class="collapse">
                                             <li class="active"><a><input type="checkbox" onclick="toggleTwitter()">Show Twitter Weather Trends</a></li>
@@ -172,8 +114,60 @@
                             <span></span>
                         </div>
                         <div class="search-box pull-left">
-                            <form action="#">
-                                <input type="text" name="search" placeholder="Search..." required>
+                            <form onsubmit="snapToState(); return false;">
+                                <input list="states" id="stateSelected" placeholder="Snap to State..." required>
+                                <datalist id="states">
+                                        <option value="Alabama">
+                                        <option value="Alaska">
+                                        <option value="Arizona">
+                                        <option value="Arkansas">
+                                        <option value="California">
+                                        <option value="Colorado">
+                                        <option value="Connecticut">
+                                        <option value="Delaware">
+                                        <option value="Florida">
+                                        <option value="Georgia">
+                                        <option value="Hawaii">
+                                        <option value="Idaho">
+                                        <option value="Illinois">
+                                        <option value="Indiana">
+                                        <option value="Iowa">
+                                        <option value="Kansas">
+                                        <option value="Kentucky">
+                                        <option value="Louisiana">
+                                        <option value="Maine">
+                                        <option value="Maryland">
+                                        <option value="Massachusetts">
+                                        <option value="Michigan">
+                                        <option value="Minnesota">
+                                        <option value="Mississippi">
+                                        <option value="Missouri">
+                                        <option value="Montana">
+                                        <option value="Nebraska">
+                                        <option value="Nevada">
+                                        <option value="New Hampshire">
+                                        <option value="New Jersey">
+                                        <option value="New Mexico">
+                                        <option value="New York">
+                                        <option value="North Carolina">
+                                        <option value="North Dakota">
+                                        <option value="Ohio">
+                                        <option value="Oklahoma">
+                                        <option value="Oregon">
+                                        <option value="Pennsylvania">
+                                        <option value="Rhode Island">
+                                        <option value="South Carolina">
+                                        <option value="South Dakota">
+                                        <option value="Tennessee">
+                                        <option value="Texas">
+                                        <option value="Utah">
+                                        <option value="Vermont">
+                                        <option value="Virginia">
+                                        <option value="Washington">
+                                        <option value="West Virginia">
+                                        <option value="Wisconsin">
+                                        <option value="Wyoming">
+                                </datalist>
                                 <i class="ti-search"></i>
                             </form>
                         </div>
@@ -183,9 +177,6 @@
                         <ul class="notification-area pull-right">
                             <li id="full-view"><i class="ti-fullscreen"></i></li>
                             <li id="full-view-exit"><i class="ti-zoom-out"></i></li>
-                            <li class="settings-btn">
-                                <i class="ti-settings"></i>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -207,22 +198,23 @@
             <div>
                 <div class="col-12">
                     <div class="row">
-                    <div class="col-4">
+                    <div class="col-3">
                         <label for="start">Start</label>
                         <input type="date" id="date-picker-start" name="trip"
                                 value="2018-11-04"
                                 min="2017-11-01" max="2018-12-31" onchange="getRange()"/>
                     </div>
-                    <div class="col-4"></div>
-                    <div class="col-4">
+                    <div class="col-6">
+                            <div class="slider row">
+                                    <input type="range" min="0" max="7" value="0" class="slider" id="forecastSlider" style="width: 100%" onchange="handleSlider()">
+                                </div>
+                    </div>
+                    <div class="col-3">
                         <label for="end">End</label>
                         <input type="date" id="date-picker-end" name="trip"
                                 value="2018-11-11"
                                 min="2017-11-01" max="2018-12-31" onchange="getRange()"/>
                     </div>
-                <div class="slider row">
-                    <input type="range" min="0" max="7" value="0" class="slider" id="forecastSlider" style="width: 100%" onchange="handleSlider()">
-                </div>
             </div>
     </div>
     <!-- page container area end -->
@@ -264,7 +256,6 @@
     <script src="assets/js/metisMenu.min.js"></script>
     <script src="assets/js/jquery.slimscroll.min.js"></script>
     <script src="assets/js/jquery.slicknav.min.js"></script>
-    <script src="assets/js/vanillaCalendar.js" type="text/javascript"></script>
 
     <!-- start chart js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>

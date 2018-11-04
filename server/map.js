@@ -20,6 +20,8 @@ var STATES = [
     "VT"
 ]
 
+var twitter_markers = []
+
 //Initialize our Google Map
 function initialize() {
     var center = new google.maps.LatLng(36.14695, -86.803819); //Vanderbilt
@@ -30,6 +32,7 @@ function initialize() {
     };
     this.map = new google.maps.Map(document.getElementById('map'),
         mapOptions);
+    process_twitter()
 };
 
 // Fill map with markers
@@ -96,7 +99,6 @@ function populateMarkers(data) {
 
     google.maps.event.addListener(map, 'zoom_changed', function() {
         var zoom = map.getZoom();
-        console.log("Current zoom level: " + zoom)
         // iterate over markers and call setVisible
         for (i = 0; i < markers.length; i++) {
             markers[i].setVisible(zoom > 8);
@@ -126,8 +128,54 @@ function getRange(){
     document.getElementById("forecastSlider").max = num_days_diff
 }
 
-function toggleTwitter(){
+function process_twitter(){
+    Object.entries(twitter_by_state).forEach(arr =>{
+        state_name = arr[0]
+        twitter_coeff = arr[1]
+        if(states[state_name]){
 
+            console.log(states[state_name])
+            // the details of the marker for the store
+            var marker = new google.maps.Marker({
+                map: map,
+                position: new google.maps.LatLng(states[state_name].lat, states[state_name].lng),
+                shopname: state_name,
+                details: twitter_coeff,
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: twitter_coeff,
+                    fillColor: "#32CD32",
+                    fillOpacity: 0.8,
+                    strokeWeight: 0.4
+                },
+            });
+            twitter_markers.push(marker)
+
+            // control what gets displayed when the icon is clicked
+            var content = '<h1 class="mt0">' + marker.shopname + '</h1><p>' + marker.details + '</p>';
+            marker.infowindow = new google.maps.InfoWindow({
+                content: content,
+                maxWidth: 400
+            });
+
+            google.maps.event.addListener(marker, 'click', function() {
+                if (MAPAPP.currentInfoWindow) MAPAPP.currentInfoWindow.close();
+                marker.infowindow.open(map, marker);
+                MAPAPP.currentInfoWindow = marker.infowindow;
+            });
+            MAPAPP.markers.push(marker);
+        }
+    })
+    toggleTwitter()
+}
+
+function toggleTwitter(){
+    console.log("Toggling!")
+    twitter_markers.forEach(marker => {
+        console.log(marker)
+        console.log(marker.visible)
+        marker.setVisible(!marker.visible)
+    })
 }
 
 function handleSlider(){
@@ -140,7 +188,6 @@ function handleSlider(){
 function run_against_model_and_update_map(){
     STATES.forEach(STATE => {
         var COUNT = query_model(DATE, CATEGORY, STATE)
-        for()
     })
 }
 
@@ -195,4 +242,34 @@ let states = {
     "West Virginia": {"lat": 38.491226, "lng": -80.954453},
     "Wisconsin": {"lat": 44.268543, "lng": -89.616508},
     "Wyoming": {"lat": 42.755966, "lng": -107.302490}
+}
+
+let twitter_by_state = {
+    "Arizona": -0.99,
+    "California": 1.97,
+    "Colorado": 1.54,
+    "Florida": 3.43,
+    "Georgia": 6.77,
+    "Indiana": 12.6,
+    "Lousiana": 2.21,
+    "Massachusetts": 1.46,
+    "Montana": 2.08,
+    "Nevada": 10.35,
+    "North Carolina": 2.12,
+    "Ohio": 2.12,
+    "Oklahoma": 6.09,
+    "Pennsylvania": 22.11,
+    "Rhode Island": 22.11,
+    "Tennessee": 16.0,
+    "Texas": 2.12,
+    "Utah": 21.18,
+    "Virginia": 22.11,
+    "Washington": 15.61,
+    "Alabama": 13.6,
+    "Kentucky": 30.49,
+    "Maryland": 40.02,
+    "Mississippi": 27.85,
+    "Nebraska": 30.1,
+    "New Mexico": 27.85,
+    "Oregon": 32.57
 }
