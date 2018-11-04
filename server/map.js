@@ -21,6 +21,8 @@ var STATES = [
 ]
 
 var twitter_markers = []
+var heatmap_arr = []
+var stores_by_state = {}
 
 //Initialize our Google Map
 function initialize() {
@@ -37,10 +39,11 @@ function initialize() {
 
 // Fill map with markers
 function populateMarkers(data) {
-    var heatmap = []
     var markers = []
     data.forEach(store => {
-        heatmap.push(new google.maps.LatLng(store.latitude, store.longitude))
+        stores_by_state[store.state] = []
+        stores_by_state[store.state].push({location: new google.maps.LatLng(store.latitude, store.longitude), weight:0.2})
+        heatmap_arr.push({location: new google.maps.LatLng(store.latitude, store.longitude), weight:0.2})
     })
     data.forEach(store => {
 
@@ -71,11 +74,11 @@ function populateMarkers(data) {
     })
 
     var heatmap = new google.maps.visualization.HeatmapLayer({
-        data: heatmap,
+        data: heatmap_arr,
         map: map
     });
 
-    var gradient = [
+    this.gradient = [
         'rgba(0, 255, 255, 0)',
         'rgba(0, 255, 255, 1)',
         'rgba(0, 191, 255, 1)',
@@ -180,6 +183,7 @@ function toggleTwitter(){
 
 function handleSlider(){
     var num_days_from_start = document.getElementById("forecastSlider").value
+    var start_date = document.getElementById("date-picker-start").value
     start_date = new Date(start_date)
     DATE = start_date.addDays(num_days_from_start)
     run_against_model_and_update_map()
@@ -188,7 +192,30 @@ function handleSlider(){
 function run_against_model_and_update_map(){
     STATES.forEach(STATE => {
         var COUNT = query_model(DATE, CATEGORY, STATE)
+        heatmap = []
+        for(store in stores_by_state[STATE]){
+            heatmap.push({location: new google.maps.LatLng(store.latitude, store.longitude), weight: COUNT})
+        }
     })
+    var heatmap = new google.maps.visualization.HeatmapLayer({
+        data: heatmap_arr,
+        map: map
+    });
+    heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+    heatmap.set('radius', heatmap.get('radius') ? null : 20);
+    heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+}
+
+function animation(){
+    var end_date = document.getElementById("date-picker-end").value
+    end_date = new Date(end_date)
+    end_date = end_date.addDays(1) //to include the last date
+    while(DATE.getTime() != end_date.getTime()){
+        document.getElementById("currDate").value = "Current Date: " + DATE.format("YYYY-mm-dd")
+        run_against_model_and_update_map()
+        DATE = DATE.addDays(1)
+    }
+
 }
 
 let states = {

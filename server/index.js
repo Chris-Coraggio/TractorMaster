@@ -20,6 +20,10 @@ app.get('/data', (req, res) => {
     res.sendFile("data/StoreLocator.json", {root: __dirname})
 })
 
+app.get('/stores/:state', (req, res) => {
+    res.sendFile("data/stores.json", {root: __dirname})
+})
+
 // fix dependency on files
 app.get("/*.*", (req, res, next) => {
     res.sendFile(`${req.params[0]}.${req.params[1]}`, {root: __dirname});
