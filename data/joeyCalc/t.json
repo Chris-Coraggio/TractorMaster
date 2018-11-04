@@ -1,0 +1,98 @@
+[
+    {
+        "bin": 0,
+        "count": 8
+    },
+    {
+        "bin": 1,
+        "count": 8
+    },
+    {
+        "bin": 2,
+        "count": 10
+    },
+    {
+        "bin": 3,
+        "count": 13
+    },
+    {
+        "bin": 4,
+        "count": 9
+    },
+    {
+        "bin": 5,
+        "count": 11
+    },
+    {
+        "bin": 6,
+        "count": 14
+    },
+    {
+        "bin": 7,
+        "count": 12
+    },
+    {
+        "bin": 8,
+        "count": 13
+    },
+    {
+        "bin": 9,
+        "count": 15
+    },
+    {
+        "bin": 10,
+        "count": 14
+    },
+    {
+        "bin": 11,
+        "count": 13
+    },
+    {
+        "bin": 12,
+        "count": 10
+    },
+    {
+        "bin": 13,
+        "count": 8
+    },
+    {
+        "bin": 14,
+        "count": 15
+    },
+    {
+        "bin": 15,
+        "count": 16
+    },
+    {
+        "bin": 16,
+        "count": 15
+    },
+    {
+        "bin": 17,
+        "count": 10
+    },
+    {
+        "bin": 18,
+        "count": 12
+    },
+    {
+        "bin": 19,
+        "count": 9
+    },
+    {
+        "bin": 20,
+        "count": 8
+    },
+    {
+        "bin": 21,
+        "count": 9
+    },
+    {
+        "bin": 22,
+        "count": 10
+    },
+    {
+        "bin": 23,
+        "count": 2
+    }
+]
