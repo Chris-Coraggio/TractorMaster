@@ -62,8 +62,10 @@ def get_top_hashtags_for_state(state):
 
 def get_proximity_to_weather(word):
     word = strip_hashtag(word)
-    nlp = spacy.load('en_core_web_lg')
+    nlp = spacy.load('en_core_web_'lg)
     print(nlp.vocab[word].similarity(nlp.vocab[u'weather']))
 
 def strip_hashtag(hashtag):
     return hashtag.replace("#", "")
+
+get_proximity_to_weather("#sunshine")

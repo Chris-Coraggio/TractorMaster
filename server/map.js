@@ -4,6 +4,22 @@ MAPAPP.markers = [];
 MAPAPP.currentInfoWindow;
 MAPAPP.pathName = window.location.pathname;
 
+var DATE;
+var CATEGORY;
+var STATES = [
+    "CT",
+    "DE",
+    "MA",
+    "MD",
+    "MN",
+    "NH",
+    "NJ",
+    "NY",
+    "PA",
+    "RI",
+    "VT"
+]
+
 //Initialize our Google Map
 function initialize() {
     var center = new google.maps.LatLng(36.14695, -86.803819); //Vanderbilt
@@ -92,6 +108,40 @@ function snapToState(){
     var state = document.getElementById("stateSelected").value
     map.panTo(new google.maps.LatLng(states[state].lat, states[state].lng));
     map.setZoom(7);
+}
+
+function changeCategory(){
+    CATEGORY = document.getElementById("categorySelected").value
+    run_against_model_and_update_map()
+}
+
+function getRange(){
+    // let date_format = "YYYY-MM-dd"
+    var start_date = document.getElementById("date-picker-start").value
+    var end_date = document.getElementById("date-picker-end").value
+    start_date = new Date(start_date)
+    end_date = new Date(end_date)
+    var timeDiff = Math.abs(end_date - start_date);
+    var num_days_diff = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+    document.getElementById("forecastSlider").max = num_days_diff
+}
+
+function toggleTwitter(){
+
+}
+
+function handleSlider(){
+    var num_days_from_start = document.getElementById("forecastSlider").value
+    start_date = new Date(start_date)
+    DATE = start_date.addDays(num_days_from_start)
+    run_against_model_and_update_map()
+}
+
+function run_against_model_and_update_map(){
+    STATES.forEach(STATE => {
+        var COUNT = query_model(DATE, CATEGORY, STATE)
+        for()
+    })
 }
 
 let states = {
