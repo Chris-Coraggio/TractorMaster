@@ -8,10 +8,10 @@
 from twitter import *
 
 # Variables that contains the user credentials to access Twitter API 
-ACCESS_TOKEN = '2826611838-NqvSMkg4ujVPLWerFdxCH4PBjUXqPTs5l1nr0SD'
-ACCESS_SECRET = 'QquERKrkmOrdmbsMQz3L31uy23ntlQ1I7qUQRcr6bKshf'
-CONSUMER_KEY = 'sMgnSJwaz9s493FmiMdG5MFGK'
-CONSUMER_SECRET = 'ikeiMUlpTn0Tc35aF53GLoBVciL6lu5JMcsaixO0JXw29Ya5Ou'
+ACCESS_TOKEN =
+ACCESS_SECRET =
+CONSUMER_KEY =
+CONSUMER_SECRET =
 
 import sys
 sys.path.append(".")
